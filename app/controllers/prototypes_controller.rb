@@ -1,5 +1,6 @@
 class PrototypesController < ApplicationController
   before_action :authenticate_user!, except:[:index,:show]
+  before_action :baria_user, only: [:edit, :destroy, :update]
 
   def index
     @prototype = Prototype.all
@@ -47,10 +48,16 @@ end
 
 
   private
+
   def prototype_params
     params.require(:prototype).permit(:title, :image, :catch_copy, :concept).merge(user_id: current_user.id)
   end
 
-  
+  def baria_user
+    @prototype = Prototype.find(params[:id])
+    unless current_user == @prototype.user
+      redirect_to root_path
+    end
+   end
 
 end
